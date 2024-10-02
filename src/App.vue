@@ -234,7 +234,7 @@ body {
   color: #C8ACD6;
 }
 .tile {
-  width: 40px;
+  width: 30px;
   aspect-ratio: 1;
   background: #433D8B;
   /* border: 1px solid black; */
