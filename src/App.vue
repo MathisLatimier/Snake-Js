@@ -17,7 +17,7 @@ import { onMounted, ref } from 'vue';
 const gridSize = ref(10);
 let matrice = ref()
 
-const end = ref()
+const end = ref(true)
 let snake
 let direction
 let score = ref(0)
@@ -33,7 +33,6 @@ onMounted(()=> {
   });
 });
 
-  startGame()
 })
 
 
@@ -41,7 +40,7 @@ onMounted(()=> {
 const startGame = () => {
   const size = parseInt(gridSize.value)
   matrice.value = Array.from({ length: size }, () => Array(size).fill(0))
-  snake = [{ x: (Math.floor(size / 2)) - 1, y: (Math.floor(size / 2 )) - 1 }];
+  snake = [{ x: (Math.floor(size / 2)) - (Math.floor(size / 4)), y: (Math.floor(size / 2 )) - 1 }];
   matrice.value[snake[0].x][snake[0].y] = 1;
   end.value = false
   score.value = 0
@@ -180,11 +179,37 @@ document.addEventListener('keydown', (event) => {
         <span class="p-1 bg-[#433D8B] border-2 border-[#C8ACD6]"> Best score : {{ bestScore }}</span>
       </div>
       <div id="gameBoard"></div>
-      <div v-if="end" class="flex flex-col justify-center items-center m-4">
-        <p class="text-red-500">Game over</p>
-        <button @click="startGame()" class="text-[#C8ACD6] text-nowrap">Restart (R)</button>
+      <div v-if="end" class="absolute top-0 w-screen h-screen bg-black/50">
+        <div class="bg-[#17153B] restart-panel p-20 left-1/2">
+          <div class="flex flex-col gap-4">
+            <h1 class="text-2xl font-semibold">Choose your gameMode</h1>
+            <label for="speed" class="flex flex-col">
+              Speed
+              <select name="speed" id="speed"  v-model="speed">
+                <option value="400">Slow</option>
+                <option value="300">Medium</option>
+                <option value="200">Fast</option>
+                <option value="100">Realy fast</option>
+                <option value="50">Extremely fast</option>
+              </select>
+            </label>
+            <label for="size" class="flex flex-col">
+              Size
+              <select name="size" id="size" v-model="gridSize">
+                <option value="5">5 x 5</option>
+                <option value="10">10 x 10</option>
+                <option value="15">15 x 15</option>
+                <option value="20">20 x 20</option>
+              </select>
+            </label>
+        
+            <button @click="startGame()" class="text-[#C8ACD6] text-nowrap w-full mt-2">Restart (R)</button>
+        
+        </div>
 
       </div>
+        </div>
+        
       <div class="flex flex-col justify-center items-center gap-2 w-40 action-button mt-4">
         <button @click="changeDirection('up')">Up (Z)</button>
         <div class="flex gap-2 justify-between">
@@ -197,28 +222,7 @@ document.addEventListener('keydown', (event) => {
       </div>
       
     </div>
-    <div class="flex flex-col gap-4">
-      <label for="speed" class="flex flex-col">
-        Speed
-        <select name="speed" id="speed"  v-model="speed">
-          <option value="400">Slow</option>
-          <option value="300">Medium</option>
-          <option value="200">Fast</option>
-          <option value="100">Realy fast</option>
-          <option value="50">Extremely fast</option>
-        </select>
-      </label>
-      <label for="size" class="flex flex-col">
-        Size
-        <select name="size" id="size" v-model="gridSize">
-          <option value="10">10 x 10</option>
-          <option value="15">15 x 15</option>
-          <option value="20">20 x 20</option>
-        </select>
-      </label>
-      
-      
-    </div>
+    
     
   </main>
   
@@ -230,7 +234,7 @@ body {
   color: #C8ACD6;
 }
 .tile {
-  width: 20px;
+  width: 40px;
   aspect-ratio: 1;
   background: #433D8B;
   /* border: 1px solid black; */
@@ -240,6 +244,13 @@ body {
   display: flex;
   border: 2px solid #2E236C;
 
+}
+
+.restart-panel {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  transform: translate(-50%, -50%);
 }
 
 .line {
@@ -260,22 +271,24 @@ body {
   background-color: #e733d8;
 }
 
-button {
+button, select {
   background-color: #433D8B;
   border: 2px solid 2E236C;
   min-width: 4rem;
-  box-shadow: 2px 2px 0px 0px #C8ACD6;
+  box-shadow: 3px 3px 0px 0px #C8ACD6;
   color: #C8ACD6;
   padding: 0.5em;
 
-  transition: 50ms ease;
+  transition: 100ms ease;
 }
 
-.action-button button:hover {
+button:hover, select:hover {
+  box-shadow: 5px 5px 0px 0px #C8ACD6;
+
 }
 
 button:active {
-  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 1);
+  box-shadow: 1px 1px 0px 0px #C8ACD6;
 
 }
 
