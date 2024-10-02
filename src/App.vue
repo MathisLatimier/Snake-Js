@@ -46,6 +46,12 @@ const startGame = () => {
   end.value = false
   score.value = 0
   currentSpeed = speed.value
+  let storedBestScore = localStorage.getItem(`bestScore-${currentSpeed}-${size}`);
+  if (storedBestScore) {
+    bestScore.value = parseInt(storedBestScore);
+  } else {
+    bestScore.value = 0
+  }
 
   snakeHead = snake;
   direction = { x: 1, y: 0 };
@@ -55,6 +61,8 @@ const startGame = () => {
 }
 
 function gameLoop() {
+  const size = parseInt(gridSize.value)
+
   const alive = moveSnake();
   if (alive) {
     drawBoard()
@@ -62,6 +70,7 @@ function gameLoop() {
   } else {
     if (score.value > bestScore.value) {
       bestScore.value = score.value
+      localStorage.setItem(`bestScore-${currentSpeed}-${size}`, score.value);
     }
     end.value = true
   }
