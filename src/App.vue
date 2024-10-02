@@ -27,16 +27,21 @@ let speed = ref(200)
 let currentSpeed
 
 onMounted(()=> {
+  document.querySelectorAll('select').forEach(selectElement => {
+  selectElement.addEventListener('change', (event) => {
+    event.target.blur();  // Retire le focus du champ <select>
+  });
+});
+
   startGame()
 })
 
+
+
 const startGame = () => {
   const size = parseInt(gridSize.value)
-  console.log(gridSize.value)
   matrice.value = Array.from({ length: size }, () => Array(size).fill(0))
-  console.log(matrice.value)
   snake = [{ x: (Math.floor(size / 2)) - 1, y: (Math.floor(size / 2 )) - 1 }];
-  console.log(snake)
   matrice.value[snake[0].x][snake[0].y] = 1;
   end.value = false
   score.value = 0
@@ -172,13 +177,13 @@ document.addEventListener('keydown', (event) => {
 
       </div>
       <div class="flex flex-col justify-center items-center gap-2 w-40 action-button mt-4">
-        <button @click="changeDirection('up')">up (Z)</button>
+        <button @click="changeDirection('up')">Up (Z)</button>
         <div class="flex gap-2 justify-between">
-          <button @click="changeDirection('left')">left (Q)</button>
-          <button @click="changeDirection('right')">right (D)</button>
+          <button @click="changeDirection('left')">Left (Q)</button>
+          <button @click="changeDirection('right')">Right (D)</button>
         </div>
         
-        <button @click="changeDirection('down')">down (S)</button>
+        <button @click="changeDirection('down')">Down (S)</button>
 
       </div>
       
