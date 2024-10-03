@@ -168,7 +168,7 @@ document.addEventListener('keydown', (event) => {
   if ((event.key === 'ArrowDown' || event.key === 's') && direction.y !== -1) direction = { x: 0, y: 1 };
   if ((event.key === 'ArrowLeft' || event.key === 'q') && direction.x !== 1) direction = { x: -1, y: 0 };
   if ((event.key === 'ArrowRight' || event.key === 'd') && direction.x !== -1) direction = { x: 1, y: 0 };
-  if (event.key === 'r' || event.key === ' ') startGame();
+  if ((event.key === 'r' || event.key === ' ') && end.value) startGame();
 });
 
 
