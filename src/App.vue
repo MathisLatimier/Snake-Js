@@ -18,9 +18,10 @@ const gridSize = ref(10);
 let matrice = ref()
 
 const end = ref(true)
+const newBestScore = ref(false)
 let snake
 let direction
-let score = ref(0)
+let score = ref(null)
 let bestScore = ref(0)
 let snakeHead
 let speed = ref(200)
@@ -40,11 +41,12 @@ onMounted(()=> {
 const startGame = () => {
   const size = parseInt(gridSize.value)
   matrice.value = Array.from({ length: size }, () => Array(size).fill(0))
-  snake = [{ x: (Math.floor(size / 2)) - (Math.floor(size / 4)), y: (Math.floor(size / 2 )) - 1 }];
+  snake = [{ x: (Math.floor(size / 2)) - (Math.floor(size / 4)), y: (Math.floor(size / 2 )) }];
   matrice.value[snake[0].x][snake[0].y] = 1;
   end.value = false
   score.value = 0
   currentSpeed = speed.value
+  newBestScore.value = false
   let storedBestScore = localStorage.getItem(`bestScore-${currentSpeed}-${size}`);
   if (storedBestScore) {
     bestScore.value = parseInt(storedBestScore);
@@ -68,6 +70,7 @@ function gameLoop() {
     setTimeout(gameLoop, currentSpeed); // Refaire la boucle après 200ms
   } else {
     if (score.value > bestScore.value) {
+      newBestScore.value = true
       bestScore.value = score.value
       localStorage.setItem(`bestScore-${currentSpeed}-${size}`, score.value);
     }
@@ -165,7 +168,7 @@ document.addEventListener('keydown', (event) => {
   if ((event.key === 'ArrowDown' || event.key === 's') && direction.y !== -1) direction = { x: 0, y: 1 };
   if ((event.key === 'ArrowLeft' || event.key === 'q') && direction.x !== 1) direction = { x: -1, y: 0 };
   if ((event.key === 'ArrowRight' || event.key === 'd') && direction.x !== -1) direction = { x: 1, y: 0 };
-  if (event.key === 'r') startGame();
+  if (event.key === 'r' || event.key === ' ') startGame();
 });
 
 
@@ -182,6 +185,12 @@ document.addEventListener('keydown', (event) => {
       <div v-if="end" class="absolute top-0 w-screen h-screen bg-black/50">
         <div class="bg-[#17153B] restart-panel p-20 left-1/2">
           <div class="flex flex-col gap-4">
+            <div v-if="score" class="flex justify-between items-center">
+              <p>Score : {{ score }}</p>
+              <p>Best score : {{ bestScore }}</p>
+
+            </div>
+            <h1 v-if="newBestScore" class="bestScore text-3xl">New Best Score !!!</h1>
             <h1 class="text-2xl font-semibold">Choose your gameMode</h1>
             <label for="speed" class="flex flex-col">
               Speed
@@ -203,7 +212,7 @@ document.addEventListener('keydown', (event) => {
               </select>
             </label>
         
-            <button @click="startGame()" class="text-[#C8ACD6] text-nowrap w-full mt-2">Restart (R)</button>
+            <button @click="startGame()" class="text-[#C8ACD6] text-nowrap w-full mt-2">Restart ('R' or 'Space')</button>
         
         </div>
 
@@ -211,13 +220,13 @@ document.addEventListener('keydown', (event) => {
         </div>
         
       <div class="flex flex-col justify-center items-center gap-2 w-40 action-button mt-4">
-        <button @click="changeDirection('up')">Up (Z)</button>
+        <button @click="changeDirection('up')">▲ (Z)</button>
         <div class="flex gap-2 justify-between">
-          <button @click="changeDirection('left')">Left (Q)</button>
-          <button @click="changeDirection('right')">Right (D)</button>
+          <button @click="changeDirection('left')">◄ (Q)</button>
+          <button @click="changeDirection('down')">▼ (S)</button>
+          <button @click="changeDirection('right')">►	(D)</button>
         </div>
         
-        <button @click="changeDirection('down')">Down (S)</button>
 
       </div>
       
@@ -243,13 +252,15 @@ body {
 #gameBoard {
   display: flex;
   border: 2px solid #2E236C;
+  background: #433D8B;
+
 
 }
 
 .restart-panel {
   position: absolute;
   left: 50%;
-  top: 30%;
+  top: 40%;
   transform: translate(-50%, -50%);
 }
 
@@ -261,17 +272,25 @@ body {
 
 .snake {
   background: #c185df;
+  border: 2px solid #433D8B;
+  border-radius: 20%;
+
 }
 
 .head {
   background: #AD49E1;
+  border: none;
+  border-radius: 30%;
+
 }
 
 .apple {
   background-color: #e733d8;
+  border-radius: 40%;
 }
 
 button, select {
+  text-wrap: nowrap;
   background-color: #433D8B;
   border: 2px solid 2E236C;
   min-width: 4rem;
@@ -295,4 +314,29 @@ button:active {
 input, select {
   background-color: #433D8B;
 }
+
+/* Make an annimation of the text color of the New Best Score */
+.bestScore {
+  text-shadow: -5px 0px #433D8B;
+  animation: colorChange 5s infinite;
+}
+
+@keyframes colorChange {
+  0% {
+    color: #C8ACD6;
+  }
+  20% {
+    color: yellow;
+  }
+  40% {
+    color: rgb(255, 0, 140);
+  }
+  60% {
+    color: rgb(0, 162, 255);
+  }
+  80% {
+    color: #4ee649;
+  }
+}
+
 </style>
