@@ -178,7 +178,7 @@ document.addEventListener('keydown', (event) => {
   <main class="flex justify-center mt-12 gap-10">
     <div class="flex flex-col items-center">
       <div class="text-[#C8ACD6] flex justify-between w-full mb-2">
-        <span class="p-1 bg-[#433D8B] border-2 border-[#C8ACD6]">Score : {{ score }}</span>
+        <span class="p-1 bg-[#433D8B] border-2 border-[#C8ACD6]">Score : {{ score || 0 }}</span>
         <span class="p-1 bg-[#433D8B] border-2 border-[#C8ACD6]"> Best score : {{ bestScore }}</span>
       </div>
       <div id="gameBoard"></div>
@@ -212,7 +212,7 @@ document.addEventListener('keydown', (event) => {
               </select>
             </label>
         
-            <button @click="startGame()" class="text-[#C8ACD6] text-nowrap w-full mt-2">Restart ('R' or 'Space')</button>
+            <button @click="startGame()" class="text-[#C8ACD6] text-nowrap w-full mt-2">{{ score ? 'Play Again' : 'Start Game' }} ('R' or 'Space')</button>
         
         </div>
 
