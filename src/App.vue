@@ -20,12 +20,13 @@ let matrice = ref()
 const end = ref(true)
 const newBestScore = ref(false)
 let snake
-let direction
+let direction = {x: 0, y: 1}
 let score = ref(null)
-let bestScore = ref(0)
 let snakeHead
 let speed = ref(200)
-let currentSpeed
+let currentSpeed = speed.value
+let bestScore = ref(localStorage.getItem(`bestScore-${currentSpeed}-${gridSize.value}`))
+
 
 onMounted(()=> {
   document.querySelectorAll('select').forEach(selectElement => {
@@ -97,7 +98,7 @@ const drawBoard = () => {
       }
       
       if (indexX === snakeHead.x && indexY === snakeHead.y) {
-        newDiv.classList.add('head')
+        newDiv.id = 'head'
       }
       newLine.appendChild(newDiv)
     })
@@ -131,6 +132,7 @@ const moveSnake = () => {
 
   
   if (matrice.value[newHead.x][newHead.y] === 2) {
+
     score.value ++
     generateFood();
     
@@ -164,11 +166,33 @@ function changeDirection(dir) {
 }
 
 document.addEventListener('keydown', (event) => {
-  if ((event.key === 'ArrowUp' || event.key === 'z') && direction.y !== 1) direction = { x: 0, y: -1 };
-  if ((event.key === 'ArrowDown' || event.key === 's') && direction.y !== -1) direction = { x: 0, y: 1 };
-  if ((event.key === 'ArrowLeft' || event.key === 'q') && direction.x !== 1) direction = { x: -1, y: 0 };
-  if ((event.key === 'ArrowRight' || event.key === 'd') && direction.x !== -1) direction = { x: 1, y: 0 };
-  if ((event.key === 'r' || event.key === ' ') && end.value) startGame();
+  let button;
+  if ((event.code === 'ArrowUp' || event.code === 'KeyW') && direction.y !== 1) {
+    direction = { x: 0, y: -1 }
+    button = document.getElementById('button-up');
+  };
+  if ((event.code === 'ArrowDown' || event.code === 'KeyS') && direction.y !== -1) {
+    direction = { x: 0, y: 1 }
+    button = document.getElementById('button-down');
+  };
+  if ((event.code === 'ArrowLeft' || event.code === 'KeyA') && direction.x !== 1) {
+    direction = { x: -1, y: 0 }
+    button = document.getElementById('button-left');
+  };
+  if ((event.code === 'ArrowRight' || event.code === 'KeyD') && direction.x !== -1) {
+    direction = { x: 1, y: 0 }
+    button = document.getElementById('button-right');
+  };
+  if ((event.code === 'KeyR' || event.code === 'Space' || event.code === 'ControlRight') && end.value) startGame();
+
+  if (button) {
+    button.classList.add('hover-active');
+    
+    // Supprimer l'effet après un petit délai (200ms par exemple)
+    setTimeout(() => {
+      button.classList.remove('hover-active');
+    }, 200);
+  }
 });
 
 
@@ -178,11 +202,11 @@ document.addEventListener('keydown', (event) => {
   <main class="flex justify-center mt-12 gap-10">
     <div class="flex flex-col items-center">
       <div class="text-[#C8ACD6] flex justify-between w-full mb-2">
-        <span class="p-1 bg-[#433D8B] border-2 border-[#C8ACD6]">Score : {{ score || 0 }}</span>
-        <span class="p-1 bg-[#433D8B] border-2 border-[#C8ACD6]"> Best score : {{ bestScore }}</span>
+        <div class="p-1 bg-[#433D8B] border-2 border-[#C8ACD6]">Score : <span>{{ score || 0 }}</span></div>
+        <div class="p-1 bg-[#433D8B] border-2 border-[#C8ACD6]"> Best score : <span>{{ bestScore }}</span></div>
       </div>
       <div id="gameBoard"></div>
-      <div v-if="end" class="absolute top-0 w-screen h-screen bg-black/50">
+      <div v-if="end" class="absolute top-0 w-screen h-screen bg-black/50 z-30">
         <div class="bg-[#17153B] restart-panel p-20 left-1/2">
           <div class="flex flex-col gap-4">
             <div v-if="score" class="flex justify-between items-center">
@@ -220,11 +244,11 @@ document.addEventListener('keydown', (event) => {
         </div>
         
       <div class="flex flex-col justify-center items-center gap-2 w-40 action-button mt-4">
-        <button @click="changeDirection('up')">▲ (Z)</button>
+        <button @click="changeDirection('up')" id="button-up">▲ (Z)</button>
         <div class="flex gap-2 justify-between">
-          <button @click="changeDirection('left')">◄ (Q)</button>
-          <button @click="changeDirection('down')">▼ (S)</button>
-          <button @click="changeDirection('right')">►	(D)</button>
+          <button @click="changeDirection('left')" id="button-left">◄ (Q)</button>
+          <button @click="changeDirection('down')" id="button-down">▼ (S)</button>
+          <button @click="changeDirection('right')" id="button-right">►	(D)</button>
         </div>
         
 
@@ -251,7 +275,7 @@ body {
 
 #gameBoard {
   display: flex;
-  border: 2px solid #2E236C;
+  border: 4px solid #2E236C;
   background: #433D8B;
 
 
@@ -259,6 +283,7 @@ body {
 
 .restart-panel {
   position: absolute;
+  z-index: 50;
   left: 50%;
   top: 40%;
   transform: translate(-50%, -50%);
@@ -273,20 +298,23 @@ body {
 .snake {
   background: #c185df;
   border: 2px solid #433D8B;
-  border-radius: 20%;
+  /* border-radius: 20%; */
 
 }
 
-.head {
+#head {
   background: #AD49E1;
   border: none;
-  border-radius: 30%;
+  /* border-radius: 20%; */
 
 }
 
 .apple {
+  position: relative;
+  z-index: 20;
   background-color: #e733d8;
-  border-radius: 40%;
+  /* border-radius: 40%; */
+  box-shadow: 0px 0px 20px 0px #e733d8;
 }
 
 button, select {
@@ -303,6 +331,11 @@ button, select {
 
 button:hover, select:hover {
   box-shadow: 5px 5px 0px 0px #C8ACD6;
+
+}
+
+button.hover-active {
+  box-shadow: 1px 1px 0px 0px #C8ACD6;
 
 }
 
