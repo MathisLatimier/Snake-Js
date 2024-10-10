@@ -186,7 +186,7 @@ document.addEventListener('keydown', (event) => {
     direction = { x: 1, y: 0 }
     button = document.getElementById('button-right');
   };
-  if ((event.code === 'KeyR' || event.code === 'Space' || event.code === 'ControlRight') && end.value) startGame();
+  if ((event.code === 'KeyR' || event.code === 'Space' || event.code === 'ControlRight' || event.code === 'Enter') && end.value) startGame();
 
   if (button) {
     button.classList.add('hover-active');
