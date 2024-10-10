@@ -26,6 +26,7 @@ let snakeHead
 let speed = ref(200)
 let currentSpeed = speed.value
 let bestScore = ref(localStorage.getItem(`bestScore-${currentSpeed}-${gridSize.value}`))
+let lastDirection = direction
 
 
 onMounted(()=> {
@@ -48,6 +49,7 @@ const startGame = () => {
   score.value = 0
   currentSpeed = speed.value
   newBestScore.value = false
+  lastDirection = direction
   let storedBestScore = localStorage.getItem(`bestScore-${currentSpeed}-${size}`);
   if (storedBestScore) {
     bestScore.value = parseInt(storedBestScore);
@@ -124,6 +126,7 @@ const generateFood = () => {
 const moveSnake = () => {
   const head = snake[0]
   const newHead = {x: head.x + direction.x, y: head.y + direction.y}
+  lastDirection = direction
   snakeHead = newHead
   if(newHead.x < 0 || newHead.y < 0 || newHead.x > matrice.value.length -1 || newHead.y > matrice.value.length -1 || matrice.value[newHead.x][newHead.y] === 1 ) {
     return false
@@ -150,16 +153,16 @@ const moveSnake = () => {
 }
 
 function changeDirection(dir) {
-  if (dir === 'right' && (direction.x !== -1 && direction.y !== 0)) {
+  if (dir === 'right' && (lastDirection.x !== -1 && lastDirection.y !== 0)) {
     direction = {x:1, y:0}
   }
-  if (dir === 'left' && (direction.x !== 1 && direction.y !== 0)) {
+  if (dir === 'left' && (lastDirection.x !== 1 && lastDirection.y !== 0)) {
     direction = {x:-1, y:0}
   }
-  if (dir === 'up' && (direction.x !== 0 && direction.y !== 1)) {
+  if (dir === 'up' && (lastDirection.x !== 0 && lastDirection.y !== 1)) {
     direction = {x:0, y:-1}
   }
-  if (dir === 'down' && (direction.x !== 0 && direction.y !== -1)) {
+  if (dir === 'down' && (lastDirection.x !== 0 && lastDirection.y !== -1)) {
     direction = {x:0, y:1}
   }
 
@@ -167,19 +170,19 @@ function changeDirection(dir) {
 
 document.addEventListener('keydown', (event) => {
   let button;
-  if ((event.code === 'ArrowUp' || event.code === 'KeyW') && direction.y !== 1) {
+  if ((event.code === 'ArrowUp' || event.code === 'KeyW') && lastDirection.y !== 1) {
     direction = { x: 0, y: -1 }
     button = document.getElementById('button-up');
   };
-  if ((event.code === 'ArrowDown' || event.code === 'KeyS') && direction.y !== -1) {
+  if ((event.code === 'ArrowDown' || event.code === 'KeyS') && lastDirection.y !== -1) {
     direction = { x: 0, y: 1 }
     button = document.getElementById('button-down');
   };
-  if ((event.code === 'ArrowLeft' || event.code === 'KeyA') && direction.x !== 1) {
+  if ((event.code === 'ArrowLeft' || event.code === 'KeyA') && lastDirection.x !== 1) {
     direction = { x: -1, y: 0 }
     button = document.getElementById('button-left');
   };
-  if ((event.code === 'ArrowRight' || event.code === 'KeyD') && direction.x !== -1) {
+  if ((event.code === 'ArrowRight' || event.code === 'KeyD') && lastDirection.x !== -1) {
     direction = { x: 1, y: 0 }
     button = document.getElementById('button-right');
   };

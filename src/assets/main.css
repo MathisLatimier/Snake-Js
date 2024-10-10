@@ -6,7 +6,7 @@
     font-family: 'Retro Gaming';
     font-style: normal;
     font-weight: normal;
-    src: local('Retro Gaming'), url('../../retro_gaming/Retro\ Gaming.woff') format('woff');
+    src: local('Retro Gaming'), url('../../retro_gaming/Retro_Gaming.woff') format('woff');
 }
 
 html {
