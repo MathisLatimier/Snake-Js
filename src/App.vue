@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue';
+import snakeImg from '@/assets/snake.png';
 
 
 // const matrice = ref([
@@ -204,7 +205,11 @@ document.addEventListener('keydown', (event) => {
 <template>
   <main class="flex justify-center mt-12 gap-10">
     <div class="flex flex-col items-center">
-      <div class="text-[#C8ACD6] flex justify-between w-full mb-2">
+      <div class="flex items-center mb-4">
+        <img :src="snakeImg" alt="logo SnakeJs" class="h-20">
+        <h1 class="text-3xl">SnakeJs<span class="text-sm align-top">©</span></h1>
+      </div>
+      <div class="text-[#C8ACD6] flex justify-between w-full mb-4">
         <div class="p-1 bg-[#433D8B] border-2 border-[#C8ACD6]">Score : <span>{{ score || 0 }}</span></div>
         <div class="p-1 bg-[#433D8B] border-2 border-[#C8ACD6]"> Best score : <span>{{ bestScore }}</span></div>
       </div>
