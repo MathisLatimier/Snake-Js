@@ -15,6 +15,7 @@ import snakeImg from '@/assets/snake.png';
 //   [0,0,0,0,0,0,0,0,0,0],
 //   [0,0,0,0,0,0,0,0,0,0],
 // ])
+
 const gridSize = ref(10);
 let matrice = ref()
 
